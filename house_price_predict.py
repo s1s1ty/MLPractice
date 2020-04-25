@@ -26,9 +26,9 @@ def gradient_decent(x, y):
     : Calculate global minimum
     : https://www.quora.com/Does-Gradient-Descent-Algo-always-converge-to-the-global-minimum
     '''
-    m_curr, b_curr = 6, 37
-    total_iteration = 100000
-    learning_rate = 0.0001
+    m_curr, b_curr = 6, 30
+    total_iteration = 10000
+    learning_rate = 0.0003
 
     for _ in range(total_iteration):
         y_predicts = m_curr * x + b_curr
@@ -41,7 +41,7 @@ def gradient_decent(x, y):
         m_curr = m_curr - learning_rate * m_derivatives
         b_curr = b_curr - learning_rate * b_derivatives
 
-    print(m_curr, b_curr, cost)
+    print("gradient_decent:: m = {}, b = {}, cost = {}".format(m_curr, b_curr, cost))
     return m_curr, b_curr
 
 def draw_regression_line(x, y):
@@ -76,7 +76,6 @@ def predict(x, parameters):
     prediction = (parameters["w"] * x) + parameters["b"]
     return prediction
 
-
 def main():
     df_data = pd.read_csv("./cracow_apartments.csv", sep=",")
     features = ["size"]
@@ -84,6 +83,15 @@ def main():
     
     # separate feature vectors and target value
     x, y = df_data[features].to_numpy(), df_data[target].to_numpy()
+    # x , y = np.array([1,2,3,4,5]), np.array([5,7,9,11,13])
+
+    # ploting 
+    fig, ax1 = plt.subplots()
+    ax1.set_title("Cracow Apartments Price by Size")
+    ax1.set_xlabel(features[0])
+    ax1.set_xlabel(target[0])
+    ax1.plot(x, y, "go")
+
     m, b = draw_regression_line(x, y)
 
     line_pram = {"w": m, "b": b}
@@ -91,14 +99,22 @@ def main():
 
     # model error
     mse_error = mean_squared_error(pred_values, y)
-    print(mse_error)
+    print("mean_squared_error:: m = {}, b = {}, cost = {}".format(m, b , mse_error))
 
     mm, bb = gradient_decent(x,y)
     line_pram = {"w": mm, "b": bb}
     pred_values = np.array([predict(i, line_pram) for i in x])
 
+    # predicted value ploting
+    ax2 = ax1.twinx()
+    ax2.plot(x, pred_values, color = "red", linestyle = "solid")
+    fig.tight_layout()
+    plt.show()
+
+    t = 0
     for i, j in zip(y, pred_values):
-        print(i, j)
+        print("House size = {}, actual price = {}, predicted price = {}".format(x[t], i, j))
+        t += 1
     
 
 if __name__ == "__main__":
