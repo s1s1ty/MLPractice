@@ -21,6 +21,29 @@ def mean_squared_error(prediction_values, actual_values):
 
     return mae_error
 
+def gradient_decent(x, y):
+    '''
+    : Calculate global minimum
+    : https://www.quora.com/Does-Gradient-Descent-Algo-always-converge-to-the-global-minimum
+    '''
+    m_curr, b_curr = 6, 37
+    total_iteration = 100000
+    learning_rate = 0.0001
+
+    for _ in range(total_iteration):
+        y_predicts = m_curr * x + b_curr
+        cost = (1.0 / (2 * len(x))) * sum((y_predicts - y)**2) # calculate mean_squared_error
+        # calculate prtial derivatives using cost function to change m & b value
+        # gives me slope
+        m_derivatives = -(2/len(x)) * sum(x * (y - y_predicts)) 
+        b_derivatives = -(2/len(x)) * sum(y - y_predicts)
+        # for direction and step
+        m_curr = m_curr - learning_rate * m_derivatives
+        b_curr = b_curr - learning_rate * b_derivatives
+
+    print(m_curr, b_curr, cost)
+    return m_curr, b_curr
+
 def draw_regression_line(x, y):
     '''
     :calculate m(slope) , b(y intersect)
@@ -69,6 +92,13 @@ def main():
     # model error
     mse_error = mean_squared_error(pred_values, y)
     print(mse_error)
+
+    mm, bb = gradient_decent(x,y)
+    line_pram = {"w": mm, "b": bb}
+    pred_values = np.array([predict(i, line_pram) for i in x])
+
+    for i, j in zip(y, pred_values):
+        print(i, j)
     
 
 if __name__ == "__main__":
