@@ -1,2 +1,7 @@
 *.pyc
 .ipynb_checkpoints/
+.vscode
+data
+*.model
+yt_*
+.DS_Store
